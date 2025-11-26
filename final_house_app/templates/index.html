@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>Area (Square Feet)</h2>
+    <input id="area" type="number">
+
+    <h3>BHK</h3>
+    <div class="option-group" id="bhk-group">
+        <button class="option" onclick="setBHK(1)">1</button>
+        <button class="option" onclick="setBHK(2)">2</button>
+        <button class="option" onclick="setBHK(3)">3</button>
+        <button class="option" onclick="setBHK(4)">4</button>
+        <button class="option" onclick="setBHK(5)">5</button>
+    </div>
+
+    <h3>Bath</h3>
+    <div class="option-group" id="bath-group">
+        <button class="option" onclick="setBath(1)">1</button>
+        <button class="option" onclick="setBath(2)">2</button>
+        <button class="option" onclick="setBath(3)">3</button>
+        <button class="option" onclick="setBath(4)">4</button>
+        <button class="option" onclick="setBath(5)">5</button>
+    </div>
+
+    <h3>Location</h3>
+    <select id="location">
+        {% for loc in locations %}
+        <option>{{loc}}</option>
+        {% endfor %}
+    </select>
+
+    <button id="estimate-btn" onclick="estimatePrice()">Estimate Price</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+let bhk=0, bath=0;
+function setBHK(v){bhk=v; highlight('bhk-group',v);}
+function setBath(v){bath=v; highlight('bath-group',v);}
+function highlight(id,v){
+  [...document.getElementById(id).children].forEach((b,i)=>b.classList.toggle('active',i+1==v));
+}
+function estimatePrice(){
+  const fd=new FormData();
+  fd.append('area',document.getElementById('area').value);
+  fd.append('bhk',bhk);
+  fd.append('bath',bath);
+  fd.append('location',document.getElementById('location').value);
+  fetch('/predict',{method:'POST',body:fd})
+  .then(r=>r.json()).then(d=>{
+    document.getElementById('result').innerText=d.price+' Lakh';
+  });
+}
+</script>
+</body>
+</html>
