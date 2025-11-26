@@ -96,6 +96,6 @@ The model returns the **predicted house price instantly**.
 
 ---
 
-## 📁 Project Structure
+
 
 
